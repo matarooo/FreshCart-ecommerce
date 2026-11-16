@@ -1,1 +1,1 @@
-export type ProductRatingProps = { rating: number; reviews: number };
+export type ProductRatingProps = { rating: number; reviews?: number };

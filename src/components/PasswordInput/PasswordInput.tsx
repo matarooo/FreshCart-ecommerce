@@ -13,11 +13,12 @@ export function PasswordInput({
   describedBy,
   invalid,
   onValueChange,
+  className,
 }: PasswordInputProps) {
   const [visible, setVisible] = useState(false);
   return (
     <div
-      className={`relative flex items-center border border-gray-300 bg-white focus-within:border-brand focus-within:ring-2 focus-within:ring-green-100 ${showIcon ? "h-[52px] rounded-xl" : "h-[42px] rounded-md"}`}
+      className={`relative flex items-center border border-gray-300 bg-white focus-within:border-brand focus-within:ring-2 focus-within:ring-green-100 ${className ?? (showIcon ? "h-[52px] rounded-xl" : "h-[42px] rounded-md")}`}
     >
       {showIcon && (
         <AuthIcon
@@ -45,6 +46,7 @@ export function PasswordInput({
         onClick={() => setVisible((value) => !value)}
         aria-label={`${visible ? "Hide" : "Show"} ${name === "confirmPassword" ? "confirmation password" : "password"}`}
         aria-pressed={visible}
+        aria-controls={id}
         className="absolute right-1 flex size-10 cursor-pointer items-center justify-center rounded-lg text-gray-400 hover:text-slate-700"
       >
         <AuthIcon name={visible ? "eyeOff" : "eye"} className="size-[18px]" />

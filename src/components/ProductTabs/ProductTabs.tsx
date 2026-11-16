@@ -1,7 +1,6 @@
 "use client";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { StoreIcon } from "@/components/icons/StoreIcon/StoreIcon";
-import { ProductRating } from "@/components/ProductRating/ProductRating";
 import type { ProductTabsProps } from "./@type";
 
 const tabs = ["Product Details", "Reviews", "Shipping & Returns"];
@@ -11,9 +10,17 @@ const features = [
   "Fast & secure packaging",
   "Quality tested",
 ];
-export function ProductTabs({ product }: ProductTabsProps) {
+export function ProductTabs({ product, reviews }: ProductTabsProps) {
   const [active, setActive] = useState(0);
   const id = useId();
+  useEffect(() => {
+    function showLinkedReviews() {
+      if (window.location.hash === "#reviews") setActive(1);
+    }
+    showLinkedReviews();
+    window.addEventListener("hashchange", showLinkedReviews);
+    return () => window.removeEventListener("hashchange", showLinkedReviews);
+  }, []);
   return (
     <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
       <div
@@ -46,7 +53,6 @@ export function ProductTabs({ product }: ProductTabsProps) {
             className={`shrink-0 border-b-2 px-5 py-4 text-sm font-medium ${active === index ? "border-brand bg-green-50/60 text-brand" : "border-transparent text-muted hover:text-brand"}`}
           >
             {tab}
-            {index === 1 ? ` (${product.ratingsQuantity})` : ""}
           </button>
         ))}
       </div>
@@ -98,17 +104,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
             </div>
           </>
         ) : active === 1 ? (
-          <>
-            <h2 className="font-semibold">Customer Reviews</h2>
-            <ProductRating
-              rating={product.ratingsAverage}
-              reviews={product.ratingsQuantity}
-            />
-            <p className="mt-4 text-sm leading-7 text-muted">
-              This preview displays sample ratings. Verified customer reviews
-              will appear here when the store is connected.
-            </p>
-          </>
+          reviews
         ) : (
           <>
             <h2 className="font-semibold">Shipping & Returns</h2>

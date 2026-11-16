@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { ProductGallery } from "@/components/ProductGallery/ProductGallery";
 import { ProductGrid } from "@/components/ProductGrid/ProductGrid";
 import { ProductPurchase } from "@/components/ProductPurchase/ProductPurchase";
+import { ProductReviews } from "@/components/ProductReviews/ProductReviews";
 import { ProductTabs } from "@/components/ProductTabs/ProductTabs";
 import { SectionHeading } from "@/components/SectionHeading/SectionHeading";
 import { shopHref } from "@/lib/catalog";
@@ -66,7 +68,18 @@ export default async function ProductPage({
         <ProductPurchase product={product} />
       </div>
       <div className="mt-10">
-        <ProductTabs product={product} />
+        <ProductTabs
+          product={product}
+          reviews={
+            <Suspense
+              fallback={
+                <output className="text-sm text-muted">Loading reviews…</output>
+              }
+            >
+              <ProductReviews productId={product.id} />
+            </Suspense>
+          }
+        />
       </div>
       <section className="mt-14">
         <SectionHeading

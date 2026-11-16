@@ -100,9 +100,13 @@ export function ProfileMenu({ userName, userEmail }: ProfileMenuProps) {
           >
             <NavIcon name="account" className={icon} /> Addresses
           </Link>
-          <button type="button" disabled className={`${row} text-slate-500`}>
+          <Link
+            href="/account?tab=settings"
+            onClick={close}
+            className={`${row} hover:bg-green-50 hover:text-brand`}
+          >
             <NavIcon name="settings" className={icon} /> Settings
-          </button>
+          </Link>
         </nav>
         <form action={logout} className="border-t border-slate-100 p-2.5">
           <button

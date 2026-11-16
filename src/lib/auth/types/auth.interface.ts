@@ -13,6 +13,7 @@ export interface SignInResponse {
   user: {
     name: string;
     email: string;
+    phone?: string;
   };
   token: string;
 }

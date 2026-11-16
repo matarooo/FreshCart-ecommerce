@@ -7,4 +7,5 @@ export type PasswordInputProps = {
   describedBy?: string;
   invalid?: boolean;
   onValueChange?: (value: string) => void;
+  className?: string;
 };

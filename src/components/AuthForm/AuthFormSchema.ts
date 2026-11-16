@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { newPasswordSchema } from "@/lib/auth/password.schema";
 
 export const signInSchema = z.object({
   email: z
@@ -12,11 +13,7 @@ export const signInSchema = z.object({
 export const signUpSchema = signInSchema
   .extend({
     name: z.string().trim().min(1, "Enter your name."),
-    password: z
-      .string()
-      .min(8, "Use at least 8 characters.")
-      .regex(/[0-9]/, "Include at least one number.")
-      .regex(/[^a-zA-Z0-9\s]/, "Include at least one symbol."),
+    password: newPasswordSchema,
     confirmPassword: z.string().min(1, "Confirm your password."),
     phone: z
       .string()

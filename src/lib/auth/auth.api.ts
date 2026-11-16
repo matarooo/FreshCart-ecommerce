@@ -9,7 +9,11 @@ import type {
 } from "./types/auth.interface";
 
 const signInResponse = z.object({
-  user: z.object({ name: z.string(), email: z.email() }),
+  user: z.object({
+    name: z.string(),
+    email: z.email(),
+    phone: z.string().optional().catch(undefined),
+  }),
   token: z.string().trim().min(1),
 });
 

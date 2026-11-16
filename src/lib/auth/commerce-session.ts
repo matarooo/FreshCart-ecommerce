@@ -10,7 +10,11 @@ const { auth: readCommerceSession } = NextAuth({
   callbacks: {
     ...authConfig.callbacks,
     session({ session, token }) {
-      return { ...session, commerceToken: token.commerceToken };
+      return {
+        ...session,
+        commerceToken: token.commerceToken,
+        phone: token.phone,
+      };
     },
   },
 });
@@ -23,7 +27,15 @@ export async function getCommerceSession() {
     "commerceToken" in session &&
     typeof session.commerceToken === "string"
   )
-    return { email: session.user.email, token: session.commerceToken };
+    return {
+      email: session.user.email,
+      name: session.user.name ?? "",
+      phone:
+        "phone" in session && typeof session.phone === "string"
+          ? session.phone
+          : undefined,
+      token: session.commerceToken,
+    };
 
   return null;
 }

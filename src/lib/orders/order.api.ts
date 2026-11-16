@@ -3,6 +3,7 @@ import "server-only";
 import { z } from "zod";
 import type { ShippingAddress } from "@/lib/addresses/types/address.interface";
 import { commerceRequest } from "@/lib/api/commerce-request";
+import { verifyCommerceAccount } from "@/lib/auth/account.api";
 import type { OrderItem, OrderSummary } from "./types/order.interface";
 
 const optionalText = z.string().trim().min(1).optional().catch(undefined);
@@ -40,17 +41,13 @@ const orderSchema = z.object({
   isDelivered: z.boolean(),
   cartItems: z.array(orderItemSchema),
 });
-const accountSchema = z.object({
-  decoded: z.object({ id: z.string().regex(/^[a-f0-9]{24}$/i) }),
-});
 const checkoutResponse = z.object({
   session: z.object({ url: z.url() }),
 });
 
 export async function getOrders(token: string): Promise<OrderSummary[]> {
-  const verified = await commerceRequest("v1/auth/verifyToken", token);
-  const { decoded } = accountSchema.parse(await verified.json());
-  const response = await commerceRequest(`v1/orders/user/${decoded.id}`, token);
+  const { id } = await verifyCommerceAccount(token);
+  const response = await commerceRequest(`v1/orders/user/${id}`, token);
   const orders = z.array(orderSchema).parse(await response.json());
   return orders
     .map(toOrderSummary)

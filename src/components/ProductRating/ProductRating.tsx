@@ -10,10 +10,12 @@ export function ProductRating({ rating, reviews }: ProductRatingProps) {
         {"☆".repeat(5 - Math.round(rating))}
       </span>
       <span className="sr-only">
-        {rating} out of 5 stars, {reviews} reviews
+        {rating} out of 5 stars
+        {reviews === undefined ? "" : `, ${reviews} reviews`}
       </span>
       <span aria-hidden="true" className="text-[10px] text-muted">
-        {rating} ({reviews})
+        {rating}
+        {reviews === undefined ? "" : ` (${reviews})`}
       </span>
     </div>
   );

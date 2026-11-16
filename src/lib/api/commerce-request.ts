@@ -8,8 +8,8 @@ export class CommerceApiError extends Error {
 
 export async function commerceRequest(
   path: string,
-  token: string,
-  method: "GET" | "POST" | "DELETE" = "GET",
+  token?: string,
+  method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
   payload?: object,
 ) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, "");
@@ -17,9 +17,10 @@ export async function commerceRequest(
   const response = await fetch(`${baseUrl}/api/${path}`, {
     method,
     cache: "no-store",
-    headers: payload
-      ? { token, "Content-Type": "application/json" }
-      : { token },
+    headers: {
+      ...(token && { token }),
+      ...(payload && { "Content-Type": "application/json" }),
+    },
     body: payload ? JSON.stringify(payload) : undefined,
   });
   if (!response.ok) throw new CommerceApiError(response.status);
