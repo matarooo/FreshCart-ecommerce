@@ -1,10 +1,13 @@
+import "server-only";
+
 import type { NextAuthConfig } from "next-auth";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { signInSchema } from "@/components/AuthForm/AuthFormSchema";
-import type { LoginResponseType } from "@/lib/Login/login.interface";
+import { authenticate } from "@/lib/auth/auth.api";
 
 export const authConfig: NextAuthConfig = {
+  session: { strategy: "jwt" },
   providers: [
     Credentials({
       name: "Auth",
@@ -16,25 +19,19 @@ export const authConfig: NextAuthConfig = {
         const result = signInSchema.safeParse(credentials);
         if (!result.success) return null;
 
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, "");
-        if (!baseUrl) throw new Error("Missing authentication API base URL.");
+        const account = await authenticate(result.data);
+        if (!account) return null;
 
-        const response = await fetch(`${baseUrl}/api/v1/auth/signin`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(result.data),
-        });
-
-        if ([400, 401, 403].includes(response.status)) return null;
-        if (!response.ok) {
-          throw new Error(`Authentication API returned ${response.status}.`);
-        }
-
-        const { user }: LoginResponseType = await response.json();
-        return { name: user.name, email: user.email };
+        return { ...account.user, commerceToken: account.token };
       },
     }),
   ],
+  callbacks: {
+    jwt({ token, user }) {
+      if (user?.commerceToken) token.commerceToken = user.commerceToken;
+      return token;
+    },
+  },
   pages: {
     signIn: "/login",
   },

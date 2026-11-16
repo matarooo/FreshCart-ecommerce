@@ -2,7 +2,7 @@ import Image from "next/image";
 import { AuthIcon } from "@/components/AuthIcon/AuthIcon";
 import { FooterIcon } from "@/components/FooterIcon/FooterIcon";
 import { NavIcon } from "@/components/NavIcon/NavIcon";
-import signInReference from "../../../Design Assets/Figma Design images/Sign Up and Sign in Design/SignIn.png";
+import signInPromotion from "../../../public/images/banners/sign-in-promotion.png";
 import type { AuthPromotionProps } from "./@type";
 
 export function AuthPromotion({ mode }: AuthPromotionProps) {
@@ -14,7 +14,7 @@ export function AuthPromotion({ mode }: AuthPromotionProps) {
       >
         <div className="relative aspect-[616/384] overflow-hidden rounded-xl bg-white shadow-lg">
           <Image
-            src={signInReference}
+            src={signInPromotion}
             alt="A shopping cart filled with fresh vegetables and groceries"
             sizes="(min-width: 1280px) 1312px, 1100px"
             className="absolute top-[-34.64%] left-[-1.95%] h-auto w-[212.99%] max-w-none"
