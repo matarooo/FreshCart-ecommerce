@@ -1,0 +1,20 @@
+export type StoreIconName =
+  | "cart"
+  | "heart"
+  | "plus"
+  | "minus"
+  | "trash"
+  | "arrow"
+  | "chevron"
+  | "box"
+  | "tag"
+  | "truck"
+  | "shield"
+  | "return"
+  | "headset"
+  | "mail"
+  | "share"
+  | "bolt"
+  | "grid"
+  | "check";
+export type StoreIconProps = { name: StoreIconName; className?: string };
