@@ -1,24 +1,48 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useCart } from "@/components/CartProvider/CartProvider";
 import { StoreIcon } from "@/components/icons/StoreIcon/StoreIcon";
 import { QuantitySelector } from "@/components/QuantitySelector/QuantitySelector";
-import { finalPrice, formatPrice } from "@/lib/catalog";
-import { useCommerce } from "@/lib/commerce-store";
+import { cartLoginHref } from "@/lib/cart/cart.client";
+import { formatPrice } from "@/lib/catalog";
 export function CartView() {
-  const { cart, cartCount, ready, setQuantity, removeFromCart, clearCart } =
-    useCommerce();
-  const total = cart.reduce(
-    (sum, item) => sum + finalPrice(item.product) * item.quantity,
-    0,
-  );
-  if (!ready)
+  const { state, cartCount, updating, isProductUpdating, refresh, update } =
+    useCart();
+  if (state.status === "loading")
     return (
       <output className="store-container block min-h-[60vh] py-12">
         Loading your cart…
       </output>
     );
-  if (!cart.length)
+  if (state.status === "sign-in")
+    return (
+      <div className="store-container flex min-h-[60vh] flex-col items-center justify-center py-20 text-center">
+        <h1 className="text-2xl font-bold text-slate-900">
+          Sign in to see your cart
+        </h1>
+        <Link href={cartLoginHref("/cart")} className="store-button mt-7">
+          Sign In
+        </Link>
+      </div>
+    );
+  if (state.status !== "ready")
+    return (
+      <div className="store-container flex min-h-[60vh] flex-col items-center justify-center py-20 text-center">
+        <h1 className="text-2xl font-bold text-slate-900">
+          Your cart is temporarily unavailable
+        </h1>
+        <button
+          type="button"
+          onClick={() => void refresh()}
+          className="store-button mt-7"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  const { items, total } = state.cart;
+  if (!items.length)
     return (
       <div className="store-container flex min-h-[60vh] flex-col items-center justify-center py-20 text-center">
         <span className="mb-7 flex size-28 items-center justify-center rounded-full bg-gray-100 text-gray-300">
@@ -69,65 +93,92 @@ export function CartView() {
       <div className="mt-8 grid items-start gap-6 lg:grid-cols-[2fr_1fr]">
         <div>
           <div className="space-y-4">
-            {cart.map(({ product, quantity }) => (
-              <article
-                key={product.id}
-                className="flex flex-wrap items-start gap-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5"
-              >
-                <Link
-                  href={`/products/${product.id}`}
-                  className="shrink-0 rounded-xl border border-gray-100 bg-gray-50 p-2"
+            {items.map(
+              ({
+                productId,
+                title,
+                imageCover,
+                category,
+                stock,
+                quantity,
+                unitPrice,
+              }) => (
+                <article
+                  key={productId}
+                  className="flex flex-wrap items-start gap-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5"
                 >
-                  <Image
-                    src={product.imageCover}
-                    alt={product.title}
-                    width={92}
-                    height={104}
-                    className="h-24 w-20 object-contain"
-                  />
-                </Link>
-                <div className="min-w-0 flex-1">
                   <Link
-                    href={`/products/${product.id}`}
-                    className="text-sm font-semibold hover:text-brand sm:text-base"
+                    href={`/products/${productId}`}
+                    className="shrink-0 rounded-xl border border-gray-100 bg-gray-50 p-2"
                   >
-                    {product.title}
+                    {imageCover ? (
+                      <Image
+                        src={imageCover}
+                        alt={title}
+                        width={92}
+                        height={104}
+                        className="h-24 w-20 object-contain"
+                      />
+                    ) : (
+                      <StoreIcon
+                        name="box"
+                        className="h-24 w-20 p-4 text-gray-300"
+                      />
+                    )}
                   </Link>
-                  <p className="mt-2">
-                    <span className="rounded-full bg-green-50 px-2.5 py-1 text-[10px] text-brand">
-                      {product.category.name}
-                    </span>
-                  </p>
-                  <p className="mt-3 text-sm font-bold text-brand">
-                    {formatPrice(finalPrice(product))}
-                  </p>
-                  <div className="mt-4">
-                    <QuantitySelector
-                      value={quantity}
-                      max={product.quantity}
-                      onChange={(value) => setQuantity(product.id, value)}
-                      label={product.title}
-                    />
-                  </div>
-                </div>
-                <div className="ml-auto flex items-end gap-3 self-end">
-                  <div className="text-right">
-                    <p className="mb-1 text-[10px] text-gray-400">Total</p>
-                    <p className="text-sm font-bold text-slate-900">
-                      {formatPrice(finalPrice(product) * quantity)}
+                  <div className="min-w-0 flex-1">
+                    <Link
+                      href={`/products/${productId}`}
+                      className="text-sm font-semibold hover:text-brand sm:text-base"
+                    >
+                      {title}
+                    </Link>
+                    {category && (
+                      <p className="mt-2">
+                        <span className="rounded-full bg-green-50 px-2.5 py-1 text-[10px] text-brand">
+                          {category}
+                        </span>
+                      </p>
+                    )}
+                    <p className="mt-3 text-sm font-bold text-brand">
+                      {formatPrice(unitPrice)}
                     </p>
+                    <div className="mt-4">
+                      <QuantitySelector
+                        value={quantity}
+                        max={stock ?? Number.MAX_SAFE_INTEGER}
+                        disabled={isProductUpdating(productId)}
+                        onChange={(value) =>
+                          void update({
+                            type: "quantity",
+                            productId,
+                            quantity: value,
+                          })
+                        }
+                        label={title}
+                      />
+                    </div>
                   </div>
-                  <button
-                    type="button"
-                    aria-label={`Remove ${product.title} from cart`}
-                    onClick={() => removeFromCart(product.id)}
-                    className="flex size-9 items-center justify-center rounded-lg border border-rose-200 bg-rose-50 text-rose-500 hover:bg-rose-100"
-                  >
-                    <StoreIcon name="trash" className="size-4" />
-                  </button>
-                </div>
-              </article>
-            ))}
+                  <div className="ml-auto flex items-end gap-3 self-end">
+                    <div className="text-right">
+                      <p className="mb-1 text-[10px] text-gray-400">Total</p>
+                      <p className="text-sm font-bold text-slate-900">
+                        {formatPrice(unitPrice * quantity)}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      aria-label={`Remove ${title} from cart`}
+                      disabled={isProductUpdating(productId)}
+                      onClick={() => void update({ type: "remove", productId })}
+                      className="flex size-9 items-center justify-center rounded-lg border border-rose-200 bg-rose-50 text-rose-500 hover:bg-rose-100"
+                    >
+                      <StoreIcon name="trash" className="size-4" />
+                    </button>
+                  </div>
+                </article>
+              ),
+            )}
           </div>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-gray-200 pt-5 text-xs">
             <Link href="/shop" className="text-brand hover:underline">
@@ -135,7 +186,8 @@ export function CartView() {
             </Link>
             <button
               type="button"
-              onClick={clearCart}
+              disabled={updating}
+              onClick={() => void update({ type: "clear" })}
               className="flex cursor-pointer items-center gap-2 text-muted hover:text-rose-500"
             >
               <StoreIcon name="trash" className="size-3" />
@@ -164,15 +216,6 @@ export function CartView() {
                 <dd className="text-brand">{formatPrice(total)}</dd>
               </div>
             </dl>
-            <Link href="/login" className="store-button mt-7 w-full">
-              Login to Checkout
-            </Link>
-            <p className="mt-3 text-center text-xs text-muted">
-              Don’t have an account?{" "}
-              <Link href="/sign-up" className="text-brand hover:underline">
-                Sign up
-              </Link>
-            </p>
             <ul className="mt-5 space-y-2 border-t border-gray-100 pt-4 text-xs text-muted">
               {[
                 "Your cart items will be saved",

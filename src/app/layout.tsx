@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Exo } from "next/font/google";
 import { Suspense } from "react";
+import { CartProvider } from "@/components/CartProvider/CartProvider";
 import { Footer } from "@/components/Footer/Footer";
 import { Navbar } from "@/components/Navbar/Navbar";
 import { SessionNavbar } from "@/components/SessionNavbar/SessionNavbar";
@@ -29,10 +30,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#main-content" className="sr-only focus:not-sr-only focus:p-3">
           Skip to content
         </a>
-        <Suspense fallback={<Navbar />}>
-          <SessionNavbar />
-        </Suspense>
-        {children}
+        <CartProvider>
+          <Suspense fallback={<Navbar />}>
+            <SessionNavbar />
+          </Suspense>
+          {children}
+        </CartProvider>
         <Footer />
         <Toaster />
       </body>

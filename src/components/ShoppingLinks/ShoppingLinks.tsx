@@ -1,9 +1,11 @@
 "use client";
 import Link from "next/link";
+import { useCart } from "@/components/CartProvider/CartProvider";
 import { StoreIcon } from "@/components/icons/StoreIcon/StoreIcon";
 import { useCommerce } from "@/lib/commerce-store";
 export function ShoppingLinks() {
-  const { wishlist, cartCount } = useCommerce();
+  const { wishlist } = useCommerce();
+  const { cartCount } = useCart();
   return (
     <>
       {[

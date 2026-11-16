@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { logout } from "@/app/login/actions";
+import { useCart } from "@/components/CartProvider/CartProvider";
 import { NavIcon } from "@/components/NavIcon/NavIcon";
 import { useCommerce } from "@/lib/commerce-store";
 import type { MobileMenuProps } from "./@type";
 
 export function MobileMenu({ userName }: MobileMenuProps) {
-  const { wishlist, cartCount } = useCommerce();
+  const { wishlist } = useCommerce();
+  const { cartCount } = useCart();
   const wishlistCount = wishlist.length;
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);

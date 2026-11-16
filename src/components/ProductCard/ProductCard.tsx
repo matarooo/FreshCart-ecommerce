@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useCart } from "@/components/CartProvider/CartProvider";
 import { StoreIcon } from "@/components/icons/StoreIcon/StoreIcon";
 import { ProductRating } from "@/components/ProductRating/ProductRating";
 import {
@@ -15,7 +16,8 @@ import { useCommerce } from "@/lib/commerce-store";
 import type { ProductCardProps } from "./@type";
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { addToCart, isWishlisted, toggleWishlist } = useCommerce();
+  const { isWishlisted, toggleWishlist } = useCommerce();
+  const { addToCart, state, isProductUpdating } = useCart();
   const [added, setAdded] = useState(false);
   const saved = isWishlisted(product.id);
   const discount = discountPercent(product);
@@ -81,10 +83,13 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
           <button
             type="button"
-            disabled={!isInStock(product)}
-            onClick={() => {
-              addToCart(product);
-              setAdded(true);
+            disabled={
+              !isInStock(product) ||
+              isProductUpdating(product.id) ||
+              state.status === "loading"
+            }
+            onClick={async () => {
+              setAdded(await addToCart(product.id));
             }}
             aria-label={`Add ${product.title} to cart`}
             className="relative z-10 flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-brand text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-gray-300"

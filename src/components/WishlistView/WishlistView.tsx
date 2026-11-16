@@ -2,11 +2,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useCart } from "@/components/CartProvider/CartProvider";
 import { StoreIcon } from "@/components/icons/StoreIcon/StoreIcon";
 import { finalPrice, formatPrice, isInStock } from "@/lib/catalog";
 import { useCommerce } from "@/lib/commerce-store";
 export function WishlistView() {
-  const { wishlist: items, ready, toggleWishlist, addToCart } = useCommerce();
+  const { wishlist: items, ready, toggleWishlist } = useCommerce();
+  const { addToCart, state, isProductUpdating } = useCart();
   const [notice, setNotice] = useState("");
   if (!ready)
     return (
@@ -106,10 +108,15 @@ export function WishlistView() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  disabled={!isInStock(product)}
-                  onClick={() => {
-                    addToCart(product);
-                    setNotice(`${product.title} added to cart.`);
+                  disabled={
+                    !isInStock(product) ||
+                    isProductUpdating(product.id) ||
+                    state.status === "loading"
+                  }
+                  onClick={async () => {
+                    setNotice("");
+                    if (await addToCart(product.id))
+                      setNotice(`${product.title} added to cart.`);
                   }}
                   className="store-button min-h-9 px-3 py-2 text-xs"
                 >

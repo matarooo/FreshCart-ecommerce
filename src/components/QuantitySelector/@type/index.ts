@@ -3,4 +3,5 @@ export type QuantitySelectorProps = {
   max: number;
   onChange: (quantity: number) => void;
   label?: string;
+  disabled?: boolean;
 };

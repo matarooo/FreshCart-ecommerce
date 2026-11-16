@@ -15,11 +15,13 @@ const { auth: readCommerceSession } = NextAuth({
   },
 });
 
-export async function getCommerceToken(): Promise<string | null> {
+export async function getCommerceToken(
+  accountEmail: string,
+): Promise<string | null> {
   await connection();
   const session = await readCommerceSession();
   if (
-    session &&
+    session?.user?.email === accountEmail &&
     "commerceToken" in session &&
     typeof session.commerceToken === "string"
   )

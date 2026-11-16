@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useCart } from "@/components/CartProvider/CartProvider";
 import { StoreIcon } from "@/components/icons/StoreIcon/StoreIcon";
 import { ProductRating } from "@/components/ProductRating/ProductRating";
 import { QuantitySelector } from "@/components/QuantitySelector/QuantitySelector";
@@ -18,12 +19,15 @@ import type { ProductPurchaseProps } from "./@type";
 export function ProductPurchase({ product }: ProductPurchaseProps) {
   const [quantity, setQuantity] = useState(1);
   const [notice, setNotice] = useState("");
-  const { addToCart, isWishlisted, toggleWishlist } = useCommerce();
+  const { isWishlisted, toggleWishlist } = useCommerce();
+  const { addToCart, state, isProductUpdating } = useCart();
   const router = useRouter();
   const saved = isWishlisted(product.id);
   const discount = discountPercent(product);
   const price = finalPrice(product);
   const inStock = isInStock(product);
+  const canAdd =
+    inStock && !isProductUpdating(product.id) && state.status !== "loading";
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
       <div className="mb-3 flex flex-wrap gap-2">
@@ -93,10 +97,11 @@ export function ProductPurchase({ product }: ProductPurchaseProps) {
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
         <button
           type="button"
-          disabled={!inStock}
-          onClick={() => {
-            addToCart(product, quantity);
-            setNotice(`${product.title} added to your cart.`);
+          disabled={!canAdd}
+          onClick={async () => {
+            setNotice("");
+            if (await addToCart(product.id, quantity))
+              setNotice(`${product.title} added to your cart.`);
           }}
           className="store-button"
         >
@@ -105,10 +110,9 @@ export function ProductPurchase({ product }: ProductPurchaseProps) {
         </button>
         <button
           type="button"
-          disabled={!inStock}
-          onClick={() => {
-            addToCart(product, quantity);
-            router.push("/cart");
+          disabled={!canAdd}
+          onClick={async () => {
+            if (await addToCart(product.id, quantity)) router.push("/cart");
           }}
           className="store-button bg-slate-900 hover:bg-slate-700"
         >
