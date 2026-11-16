@@ -1,3 +1,5 @@
+import type { AccountResourceState } from "@/lib/auth/types/account-resource.interface";
+
 export interface CartItem {
   productId: string;
   title: string;
@@ -18,6 +20,4 @@ export type CartChange =
   | { type: "remove"; productId: string }
   | { type: "clear" };
 
-export type CartState =
-  | { status: "loading" | "sign-in" | "error" }
-  | { status: "ready"; cart: Cart };
+export type CartState = AccountResourceState<Cart>;

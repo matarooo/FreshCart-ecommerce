@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer/Footer";
 import { Navbar } from "@/components/Navbar/Navbar";
 import { SessionNavbar } from "@/components/SessionNavbar/SessionNavbar";
 import { Toaster } from "@/components/Toaster/Toaster";
+import { WishlistProvider } from "@/components/WishlistProvider/WishlistProvider";
 import "./globals.css";
 
 const exo = Exo({
@@ -31,10 +32,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <CartProvider>
-          <Suspense fallback={<Navbar />}>
-            <SessionNavbar />
-          </Suspense>
-          {children}
+          <WishlistProvider>
+            <Suspense fallback={<Navbar />}>
+              <SessionNavbar />
+            </Suspense>
+            {children}
+          </WishlistProvider>
         </CartProvider>
         <Footer />
         <Toaster />

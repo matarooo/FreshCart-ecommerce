@@ -10,9 +10,3 @@ export interface CartContextValue {
   update: (change: CartChange) => Promise<boolean>;
   addToCart: (productId: string, quantity?: number) => Promise<boolean>;
 }
-
-export interface CartQueue {
-  tail: Promise<boolean>;
-  pending: Set<string | null>;
-  needsSignIn: boolean;
-}

@@ -1,20 +1,41 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { useCart } from "@/components/CartProvider/CartProvider";
 import { StoreIcon } from "@/components/icons/StoreIcon/StoreIcon";
+import { WishlistCartButton } from "@/components/WishlistCartButton/WishlistCartButton";
+import { useWishlist } from "@/components/WishlistProvider/WishlistProvider";
+import { loginHref } from "@/lib/auth/account-resource.client";
 import { finalPrice, formatPrice, isInStock } from "@/lib/catalog";
-import { useCommerce } from "@/lib/commerce-store";
 export function WishlistView() {
-  const { wishlist: items, ready, toggleWishlist } = useCommerce();
-  const { addToCart, state, isProductUpdating } = useCart();
-  const [notice, setNotice] = useState("");
-  if (!ready)
+  const wishlist = useWishlist();
+  const { products: items, state: wishlistState, toggle, refresh } = wishlist;
+  const { state: cartState } = useCart();
+  const cartProductIds = new Set(
+    cartState.status === "ready"
+      ? cartState.data.items.map((item) => item.productId)
+      : [],
+  );
+  if (wishlistState.status === "loading")
     return (
       <output className="store-container block min-h-[60vh] py-12">
         Loading your wishlist…
       </output>
+    );
+  if (wishlistState.status === "error")
+    return (
+      <div className="store-container flex min-h-[55vh] flex-col items-center justify-center py-16 text-center">
+        <h1 className="text-xl font-bold text-slate-900">
+          Your wishlist is temporarily unavailable
+        </h1>
+        <button
+          type="button"
+          className="store-button mt-6"
+          onClick={() => void refresh()}
+        >
+          Try Again
+        </button>
+      </div>
     );
   if (!items.length)
     return (
@@ -23,22 +44,25 @@ export function WishlistView() {
           <StoreIcon name="heart" className="size-9" />
         </span>
         <h1 className="text-xl font-bold text-slate-900">
-          Your wishlist is empty
+          {wishlistState.status === "sign-in"
+            ? "Sign in to see your wishlist"
+            : "Your wishlist is empty"}
         </h1>
         <p className="mt-3 max-w-sm text-sm leading-6 text-muted">
-          Browse products and save your favorites here. Sign in to sync your
-          wishlist across devices.
+          Browse products and save your favorites here.
         </p>
         <Link href="/shop" className="store-button mt-6 w-full max-w-xs">
           Browse Products
           <StoreIcon name="arrow" className="size-4" />
         </Link>
-        <Link
-          href="/login"
-          className="store-outline-button mt-3 w-full max-w-xs"
-        >
-          Sign In
-        </Link>
+        {wishlistState.status === "sign-in" && (
+          <Link
+            href={loginHref("/wishlist")}
+            className="store-outline-button mt-3 w-full max-w-xs"
+          >
+            Sign In
+          </Link>
+        )}
       </div>
     );
   return (
@@ -100,36 +124,28 @@ export function WishlistView() {
               <p className="text-sm font-semibold text-slate-900">
                 {formatPrice(finalPrice(product))}
               </p>
-              <span
-                className={`w-fit rounded-full px-3 py-1 text-xs ${isInStock(product) ? "bg-green-50 text-brand" : "bg-rose-50 text-rose-500"}`}
-              >
-                ● {isInStock(product) ? "In Stock" : "Out of Stock"}
-              </span>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  disabled={
-                    !isInStock(product) ||
-                    isProductUpdating(product.id) ||
-                    state.status === "loading"
-                  }
-                  onClick={async () => {
-                    setNotice("");
-                    if (await addToCart(product.id))
-                      setNotice(`${product.title} added to cart.`);
-                  }}
-                  className="store-button min-h-9 px-3 py-2 text-xs"
-                >
+              {cartProductIds.has(product.id) ? (
+                <span className="inline-flex w-fit items-center gap-1 rounded-full bg-green-50 px-3 py-1 text-xs text-brand">
                   <StoreIcon name="cart" className="size-3" />
-                  Add to Cart
-                </button>
+                  In Cart
+                </span>
+              ) : (
+                <span
+                  className={`w-fit rounded-full px-3 py-1 text-xs ${isInStock(product) ? "bg-green-50 text-brand" : "bg-rose-50 text-rose-500"}`}
+                >
+                  ● {isInStock(product) ? "In Stock" : "Out of Stock"}
+                </span>
+              )}
+              <div className="flex items-center gap-2">
+                <WishlistCartButton
+                  product={product}
+                  inCart={cartProductIds.has(product.id)}
+                />
                 <button
                   type="button"
                   aria-label={`Remove ${product.title} from wishlist`}
-                  onClick={() => {
-                    toggleWishlist(product);
-                    setNotice("");
-                  }}
+                  disabled={wishlist.isProductUpdating(product.id)}
+                  onClick={() => void toggle(product.id)}
                   className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-rose-50 hover:text-rose-500"
                 >
                   <StoreIcon name="trash" className="size-4" />
@@ -138,7 +154,6 @@ export function WishlistView() {
             </article>
           ))}
         </div>
-        <output className="mt-4 block text-xs text-brand">{notice}</output>
         <Link
           href="/shop"
           className="mt-5 inline-block text-xs text-muted hover:text-brand"

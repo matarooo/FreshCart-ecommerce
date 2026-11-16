@@ -1,5 +1,5 @@
 import { connection } from "next/server";
-import { CartSession } from "@/components/CartSession/CartSession";
+import { CommerceSession } from "@/components/CommerceSession/CommerceSession";
 import { Navbar } from "@/components/Navbar/Navbar";
 import { auth } from "../../../authjs/authjs";
 
@@ -12,7 +12,7 @@ export async function SessionNavbar() {
 
   return (
     <>
-      <CartSession email={session?.user?.email ?? null} />
+      <CommerceSession email={session?.user?.email ?? null} />
       <Navbar
         userName={userName}
         userEmail={session?.user?.email ?? undefined}

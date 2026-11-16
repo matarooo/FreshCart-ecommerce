@@ -6,20 +6,20 @@ import { useState } from "react";
 import { useCart } from "@/components/CartProvider/CartProvider";
 import { StoreIcon } from "@/components/icons/StoreIcon/StoreIcon";
 import { ProductRating } from "@/components/ProductRating/ProductRating";
+import { useWishlist } from "@/components/WishlistProvider/WishlistProvider";
 import {
   discountPercent,
   finalPrice,
   formatPrice,
   isInStock,
 } from "@/lib/catalog";
-import { useCommerce } from "@/lib/commerce-store";
 import type { ProductCardProps } from "./@type";
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { isWishlisted, toggleWishlist } = useCommerce();
+  const wishlist = useWishlist();
   const { addToCart, state, isProductUpdating } = useCart();
   const [added, setAdded] = useState(false);
-  const saved = isWishlisted(product.id);
+  const saved = wishlist.isSaved(product.id);
   const discount = discountPercent(product);
   return (
     <article className="group relative flex min-w-0 flex-col overflow-hidden rounded-lg border border-gray-200 bg-white transition-shadow hover:shadow-lg">
@@ -44,7 +44,11 @@ export function ProductCard({ product }: ProductCardProps) {
       )}
       <button
         type="button"
-        onClick={() => toggleWishlist(product)}
+        disabled={
+          wishlist.state.status === "loading" ||
+          wishlist.isProductUpdating(product.id)
+        }
+        onClick={() => void wishlist.toggle(product.id)}
         aria-label={`${saved ? "Remove" : "Save"} ${product.title} ${saved ? "from" : "to"} wishlist`}
         aria-pressed={saved}
         className={`absolute top-2 right-2 z-10 flex size-8 items-center justify-center rounded-full bg-white shadow-sm transition-colors hover:bg-rose-50 ${saved ? "text-rose-500" : "text-slate-400"}`}

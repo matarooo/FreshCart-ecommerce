@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCart } from "@/components/CartProvider/CartProvider";
 import { StoreIcon } from "@/components/icons/StoreIcon/StoreIcon";
 import { QuantitySelector } from "@/components/QuantitySelector/QuantitySelector";
-import { cartLoginHref } from "@/lib/cart/cart.client";
+import { loginHref } from "@/lib/auth/account-resource.client";
 import { formatPrice } from "@/lib/catalog";
 export function CartView() {
   const { state, cartCount, updating, isProductUpdating, refresh, update } =
@@ -21,7 +21,7 @@ export function CartView() {
         <h1 className="text-2xl font-bold text-slate-900">
           Sign in to see your cart
         </h1>
-        <Link href={cartLoginHref("/cart")} className="store-button mt-7">
+        <Link href={loginHref("/cart")} className="store-button mt-7">
           Sign In
         </Link>
       </div>
@@ -41,7 +41,7 @@ export function CartView() {
         </button>
       </div>
     );
-  const { items, total } = state.cart;
+  const { items, total } = state.data;
   if (!items.length)
     return (
       <div className="store-container flex min-h-[60vh] flex-col items-center justify-center py-20 text-center">

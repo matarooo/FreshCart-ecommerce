@@ -2,9 +2,9 @@
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider/CartProvider";
 import { StoreIcon } from "@/components/icons/StoreIcon/StoreIcon";
-import { useCommerce } from "@/lib/commerce-store";
+import { useWishlist } from "@/components/WishlistProvider/WishlistProvider";
 export function ShoppingLinks() {
-  const { wishlist } = useCommerce();
+  const { products: wishlist } = useWishlist();
   const { cartCount } = useCart();
   return (
     <>

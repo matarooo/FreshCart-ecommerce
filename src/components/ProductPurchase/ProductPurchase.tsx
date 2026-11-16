@@ -7,6 +7,7 @@ import { StoreIcon } from "@/components/icons/StoreIcon/StoreIcon";
 import { ProductRating } from "@/components/ProductRating/ProductRating";
 import { QuantitySelector } from "@/components/QuantitySelector/QuantitySelector";
 import { ServiceBenefits } from "@/components/ServiceBenefits/ServiceBenefits";
+import { useWishlist } from "@/components/WishlistProvider/WishlistProvider";
 import {
   discountPercent,
   finalPrice,
@@ -14,15 +15,14 @@ import {
   isInStock,
   shopHref,
 } from "@/lib/catalog";
-import { useCommerce } from "@/lib/commerce-store";
 import type { ProductPurchaseProps } from "./@type";
 export function ProductPurchase({ product }: ProductPurchaseProps) {
   const [quantity, setQuantity] = useState(1);
   const [notice, setNotice] = useState("");
-  const { isWishlisted, toggleWishlist } = useCommerce();
+  const wishlist = useWishlist();
   const { addToCart, state, isProductUpdating } = useCart();
   const router = useRouter();
-  const saved = isWishlisted(product.id);
+  const saved = wishlist.isSaved(product.id);
   const discount = discountPercent(product);
   const price = finalPrice(product);
   const inStock = isInStock(product);
@@ -124,7 +124,11 @@ export function ProductPurchase({ product }: ProductPurchaseProps) {
         <button
           type="button"
           aria-pressed={saved}
-          onClick={() => toggleWishlist(product)}
+          disabled={
+            wishlist.state.status === "loading" ||
+            wishlist.isProductUpdating(product.id)
+          }
+          onClick={() => void wishlist.toggle(product.id)}
           className={`store-outline-button flex-1 ${saved ? "text-rose-500" : ""}`}
         >
           <StoreIcon
