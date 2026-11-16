@@ -166,6 +166,18 @@ export function MobileMenu({ userName }: MobileMenuProps) {
                 {userName ?? "Sign In"}
               </Link>
               {userName && (
+                <Link
+                  href="/account/orders"
+                  onClick={closeMenu}
+                  className="flex min-h-14 items-center gap-3 rounded-lg px-4 hover:bg-gray-50"
+                >
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-500">
+                    <NavIcon name="orders" className="size-5" />
+                  </span>
+                  My Orders
+                </Link>
+              )}
+              {userName && (
                 <form action={logout}>
                   <button
                     type="submit"

@@ -25,6 +25,29 @@ const paths: Record<StoreIconName, React.ReactNode> = {
       <path d="m12 2 10 5-10 5L2 7l10-5ZM2 7v10l10 5 10-5V7M12 12v10M7 4.5l10 5" />
     </>
   ),
+  bag: <path d="M5 8h14l1 13H4L5 8Zm4 0V6a3 3 0 0 1 6 0v2" />,
+  calendar: (
+    <>
+      <rect x="3" y="5" width="18" height="16" rx="2" />
+      <path d="M3 10h18M8 3v4m8-4v4m-8 7h.01m4 0h.01m4 0h.01" />
+    </>
+  ),
+  cash: (
+    <>
+      <rect x="2" y="6" width="20" height="12" rx="2" />
+      <circle cx="12" cy="12" r="2.5" />
+      <path d="M6 12h.01m12 0h.01" />
+    </>
+  ),
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </>
+  ),
+  receipt: (
+    <path d="M5 3l2 2 2-2 3 2 3-2 2 2 2-2v18l-2-2-2 2-3-2-3 2-2-2-2 2V3Zm4 6h6m-6 4h6m-6 4h4" />
+  ),
   tag: (
     <>
       <path d="M3 3h9l10 10-9 9L3 12V3Z" />

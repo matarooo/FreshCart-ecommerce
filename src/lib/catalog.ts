@@ -15,8 +15,8 @@ export const shopHref = (filter: "category" | "brand", name: string) =>
 const priceFormat = new Intl.NumberFormat("en-EG", {
   maximumFractionDigits: 2,
 });
-export const formatPrice = (value: number) =>
-  `${priceFormat.format(value)} EGP`;
+export const formatAmount = (value: number) => priceFormat.format(value);
+export const formatPrice = (value: number) => `${formatAmount(value)} EGP`;
 
 export const finalPrice = (product: Priced) =>
   product.priceAfterDiscount ?? product.price;

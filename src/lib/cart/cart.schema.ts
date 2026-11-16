@@ -7,6 +7,10 @@ export const cartChangeSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("add"), productId, quantity }),
   z.object({ type: z.literal("quantity"), productId, quantity }),
   z.object({ type: z.literal("remove"), productId }),
+  z.object({
+    type: z.literal("coupon"),
+    couponName: z.string().trim().min(1).max(80),
+  }),
   z.object({ type: z.literal("clear") }),
 ]);
 
@@ -19,7 +23,9 @@ const cartProduct = z.object({
 });
 
 export const cartResponseSchema = z.object({
+  cartId: productId.nullish(),
   data: z.object({
+    _id: productId.nullish(),
     products: z.array(
       z.object({
         product: z.union([cartProduct, productId]),
@@ -28,5 +34,6 @@ export const cartResponseSchema = z.object({
       }),
     ),
     totalCartPrice: z.number().nonnegative(),
+    totalPriceAfterDiscount: z.number().nonnegative().nullish(),
   }),
 });

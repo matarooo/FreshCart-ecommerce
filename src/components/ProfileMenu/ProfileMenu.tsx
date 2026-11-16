@@ -72,12 +72,20 @@ export function ProfileMenu({ userName, userEmail }: ProfileMenuProps) {
           </div>
         </div>
         <nav aria-label="Profile navigation" className="p-2.5">
-          <button type="button" disabled className={`${row} text-slate-500`}>
+          <Link
+            href="/account"
+            onClick={close}
+            className={`${row} hover:bg-green-50 hover:text-brand`}
+          >
             <NavIcon name="user" className={icon} /> My Profile
-          </button>
-          <button type="button" disabled className={`${row} text-slate-500`}>
+          </Link>
+          <Link
+            href="/account/orders"
+            onClick={close}
+            className={`${row} hover:bg-green-50 hover:text-brand`}
+          >
             <NavIcon name="orders" className={icon} /> My Orders
-          </button>
+          </Link>
           <Link
             href="/wishlist"
             onClick={close}
@@ -85,9 +93,13 @@ export function ProfileMenu({ userName, userEmail }: ProfileMenuProps) {
           >
             <NavIcon name="heart" className={icon} /> My Wishlist
           </Link>
-          <button type="button" disabled className={`${row} text-slate-500`}>
+          <Link
+            href="/account"
+            onClick={close}
+            className={`${row} hover:bg-green-50 hover:text-brand`}
+          >
             <NavIcon name="account" className={icon} /> Addresses
-          </button>
+          </Link>
           <button type="button" disabled className={`${row} text-slate-500`}>
             <NavIcon name="settings" className={icon} /> Settings
           </button>

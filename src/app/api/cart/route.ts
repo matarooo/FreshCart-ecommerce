@@ -8,13 +8,17 @@ function cartResponse(data: object, status = 200) {
   return Response.json(data, { status, headers: responseHeaders });
 }
 
-function cartFailure(error: unknown) {
+function cartFailure(error: unknown, applyingCoupon = false) {
   if (error instanceof CartApiError) {
     if (error.status === 401 || error.status === 403)
       return cartResponse({ error: "Sign in to use your cart." }, 401);
     if ([400, 404, 409, 422].includes(error.status))
       return cartResponse(
-        { error: "Check product availability and try again." },
+        {
+          error: applyingCoupon
+            ? "This coupon could not be applied. Check the code and try again."
+            : "Check product availability and try again.",
+        },
         409,
       );
   }
@@ -39,6 +43,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  let applyingCoupon = false;
   try {
     const token = await requestToken(request);
     if (!token)
@@ -49,8 +54,9 @@ export async function POST(request: Request) {
     );
     if (!result.success)
       return cartResponse({ error: "Invalid cart change." }, 400);
+    applyingCoupon = result.data.type === "coupon";
     return cartResponse(await updateCart(token, result.data));
   } catch (error) {
-    return cartFailure(error);
+    return cartFailure(error, applyingCoupon);
   }
 }

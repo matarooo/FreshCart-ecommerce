@@ -14,7 +14,7 @@ async function requestCart(
   token: string,
   method: "GET" | "POST" | "PUT" | "DELETE",
   productId?: string,
-  data?: { productId: string } | { count: number },
+  data?: { productId: string } | { count: number } | { couponName: string },
 ) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, "");
   if (!baseUrl) throw new Error("Missing cart API base URL.");
@@ -31,7 +31,7 @@ async function requestCart(
 }
 
 async function readCart(response: Response): Promise<Cart> {
-  const { data } = cartResponseSchema.parse(await response.json());
+  const { cartId, data } = cartResponseSchema.parse(await response.json());
   const items = await Promise.all(
     data.products.map(async ({ product, count, price }) => {
       const productId = typeof product === "string" ? product : product._id;
@@ -60,7 +60,12 @@ async function readCart(response: Response): Promise<Cart> {
       };
     }),
   );
-  return { items, total: data.totalCartPrice };
+  return {
+    id: cartId ?? data._id ?? undefined,
+    items,
+    total: data.totalCartPrice,
+    discountedTotal: data.totalPriceAfterDiscount ?? undefined,
+  };
 }
 
 export async function getCart(token: string): Promise<Cart> {
@@ -102,6 +107,11 @@ export async function updateCart(
       );
     case "remove":
       return readCart(await requestCart(token, "DELETE", change.productId));
+    case "coupon":
+      await requestCart(token, "PUT", "applyCoupon", {
+        couponName: change.couponName,
+      });
+      return getCart(token);
     case "clear":
       await requestCart(token, "DELETE");
       return { items: [], total: 0 };

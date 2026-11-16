@@ -19,10 +19,7 @@ export function CartProvider({ children }: PropsWithChildren) {
       : 0;
 
   function update(change: CartChange) {
-    return cart.update(
-      change,
-      change.type === "clear" ? null : change.productId,
-    );
+    return cart.update(change, "productId" in change ? change.productId : null);
   }
 
   return (

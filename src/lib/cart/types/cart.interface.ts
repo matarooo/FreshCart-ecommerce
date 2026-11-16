@@ -11,13 +11,16 @@ export interface CartItem {
 }
 
 export interface Cart {
+  id?: string;
   items: CartItem[];
   total: number;
+  discountedTotal?: number;
 }
 
 export type CartChange =
   | { type: "add" | "quantity"; productId: string; quantity: number }
   | { type: "remove"; productId: string }
+  | { type: "coupon"; couponName: string }
   | { type: "clear" };
 
 export type CartState = AccountResourceState<Cart>;
