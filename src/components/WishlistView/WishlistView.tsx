@@ -2,14 +2,24 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider/CartProvider";
+import { GuestTransferNotice } from "@/components/GuestTransferNotice/GuestTransferNotice";
 import { StoreIcon } from "@/components/icons/StoreIcon/StoreIcon";
 import { WishlistCartButton } from "@/components/WishlistCartButton/WishlistCartButton";
 import { useWishlist } from "@/components/WishlistProvider/WishlistProvider";
 import { loginHref } from "@/lib/auth/account-resource.client";
 import { finalPrice, formatPrice, isInStock } from "@/lib/catalog";
+import { useGuestTransfer } from "@/lib/guest-shopping/guest-transfer.client";
 export function WishlistView() {
   const wishlist = useWishlist();
-  const { products: items, state: wishlistState, toggle, refresh } = wishlist;
+  const {
+    products: items,
+    state: wishlistState,
+    accountEmail,
+    toggle,
+    refresh,
+  } = wishlist;
+  const signIn = accountEmail === null || wishlistState.status === "sign-in";
+  const transfer = useGuestTransfer(accountEmail);
   const { state: cartState } = useCart();
   const cartProductIds = new Set(
     cartState.status === "ready"
@@ -21,6 +31,12 @@ export function WishlistView() {
       <output className="store-container block min-h-[60vh] py-12">
         Loading your wishlist…
       </output>
+    );
+  if (accountEmail && (transfer.syncing || transfer.pendingWishlist))
+    return (
+      <div className="store-container min-h-[60vh] py-8">
+        <GuestTransferNotice email={accountEmail} />
+      </div>
     );
   if (wishlistState.status === "error")
     return (
@@ -39,26 +55,28 @@ export function WishlistView() {
     );
   if (!items.length)
     return (
-      <div className="store-container flex min-h-[60vh] flex-col items-center justify-center py-16 text-center">
+      <div className="store-container flex min-h-screen flex-col items-center pt-20 pb-16 text-center">
         <span className="mb-6 flex size-20 items-center justify-center rounded-2xl bg-gray-100 text-gray-400">
           <StoreIcon name="heart" className="size-9" />
         </span>
         <h1 className="text-xl font-bold text-slate-900">
-          {wishlistState.status === "sign-in"
-            ? "Sign in to see your wishlist"
-            : "Your wishlist is empty"}
+          Your wishlist is empty
         </h1>
-        <p className="mt-3 max-w-sm text-sm leading-6 text-muted">
+        <p className="mt-2 max-w-sm text-sm leading-5 text-muted">
           Browse products and save your favorites here.
+          {signIn && " Sign in to sync your wishlist across devices."}
         </p>
-        <Link href="/shop" className="store-button mt-6 w-full max-w-xs">
+        <Link
+          href="/shop"
+          className="store-button mt-6 min-h-12 w-full max-w-sm rounded-xl text-base"
+        >
           Browse Products
           <StoreIcon name="arrow" className="size-4" />
         </Link>
-        {wishlistState.status === "sign-in" && (
+        {signIn && (
           <Link
             href={loginHref("/wishlist")}
-            className="store-outline-button mt-3 w-full max-w-xs"
+            className="store-outline-button mt-3 min-h-12 w-full max-w-sm rounded-xl text-base"
           >
             Sign In
           </Link>
@@ -145,7 +163,7 @@ export function WishlistView() {
                   type="button"
                   aria-label={`Remove ${product.title} from wishlist`}
                   disabled={wishlist.isProductUpdating(product.id)}
-                  onClick={() => void toggle(product.id)}
+                  onClick={() => void toggle(product)}
                   className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:bg-rose-50 hover:text-rose-500"
                 >
                   <StoreIcon name="trash" className="size-4" />

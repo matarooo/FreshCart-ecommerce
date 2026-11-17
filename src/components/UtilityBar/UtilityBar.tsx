@@ -6,7 +6,7 @@ import type { UtilityBarProps } from "./@type";
 export function UtilityBar({ userName }: UtilityBarProps) {
   return (
     <div className="hidden border-b border-gray-100 xl:block">
-      <div className="mx-auto flex h-10 max-w-[1540px] items-center justify-between gap-6 px-5 text-sm text-muted">
+      <div className="store-container flex h-10 items-center justify-between gap-6 text-sm text-muted">
         <div className="flex items-center gap-6">
           <span className="flex items-center gap-2">
             <NavIcon name="truck" className="size-3.5 text-brand" />
@@ -43,7 +43,7 @@ export function UtilityBar({ userName }: UtilityBarProps) {
               <NavIcon name="user" className="size-3" />
               {userName ?? "Sign In"}
             </Link>
-            {userName && (
+            {userName ? (
               <form action={logout}>
                 <button
                   type="submit"
@@ -53,6 +53,14 @@ export function UtilityBar({ userName }: UtilityBarProps) {
                   Sign Out
                 </button>
               </form>
+            ) : (
+              <Link
+                href="/sign-up"
+                className="flex items-center gap-2 transition-colors hover:text-brand"
+              >
+                <NavIcon name="user" className="size-3" />
+                Sign Up
+              </Link>
             )}
           </div>
         </div>

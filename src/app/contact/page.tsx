@@ -38,31 +38,31 @@ const contactItems: {
 ];
 export default function ContactPage() {
   return (
-    <main id="main-content" className="flex-1 bg-gray-50/60">
+    <main id="main-content" className="flex-1 bg-gray-50">
       <PageBanner
         title="Contact Us"
         subtitle="We’d love to hear from you. Get in touch with our team."
         icon="headset"
       />
-      <div className="store-container grid items-start gap-6 py-10 lg:grid-cols-[1fr_2fr]">
-        <aside className="space-y-5">
+      <div className="store-container grid items-start gap-8 py-12 lg:grid-cols-[1fr_2.07fr]">
+        <aside className="space-y-6">
           {contactItems.map((item) => (
             <section
               key={item.title}
-              className="flex gap-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+              className="flex gap-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
             >
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-green-50 text-brand">
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-green-50 text-brand">
                 <StoreIcon name={item.icon} />
               </span>
               <div>
-                <h2 className="text-sm font-semibold">{item.title}</h2>
-                <p className="mt-2 whitespace-pre-line text-xs leading-5 text-muted">
+                <h2 className="font-semibold text-gray-900">{item.title}</h2>
+                <p className="mt-1 whitespace-pre-line text-sm leading-5 text-muted">
                   {item.details}
                 </p>
                 {item.link && (
                   <a
                     href={item.link}
-                    className="mt-2 inline-block break-all text-sm text-brand hover:underline"
+                    className="mt-2 inline-block break-all text-brand hover:underline"
                   >
                     {item.value}
                   </a>

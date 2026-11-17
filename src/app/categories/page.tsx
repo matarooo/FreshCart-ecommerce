@@ -4,14 +4,16 @@ import { PageBanner } from "@/components/PageBanner/PageBanner";
 export const metadata: Metadata = { title: "Shop by Category | FreshCart" };
 export default function CategoriesPage() {
   return (
-    <main id="main-content" className="flex-1 bg-gray-50/60">
+    <main id="main-content" className="flex-1 bg-gray-50">
       <PageBanner
-        title="Shop By Category"
-        subtitle="Find something for every part of your day"
+        title="All Categories"
+        breadcrumb="Categories"
+        subtitle="Browse our wide range of product categories"
         icon="grid"
+        spacious
       />
       <div className="store-container py-10">
-        <CategoryGrid showCounts />
+        <CategoryGrid catalog />
       </div>
     </main>
   );

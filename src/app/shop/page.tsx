@@ -9,7 +9,7 @@ export default function ShopPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   return (
-    <main id="main-content" className="flex-1 bg-gray-50/60 pb-10">
+    <main id="main-content" className="flex-1 bg-gray-50 pb-10">
       <PageBanner
         title="All Products"
         subtitle="Explore our complete product collection"

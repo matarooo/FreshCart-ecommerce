@@ -4,7 +4,7 @@ import { NavIcon } from "@/components/NavIcon/NavIcon";
 export function FooterBenefits() {
   return (
     <div className="hidden border-y border-green-100 bg-[#f0fdf4] lg:block">
-      <ul className="mx-auto grid max-w-[1368px] grid-cols-4 gap-6 px-4 py-6 text-[#111827]">
+      <ul className="store-container grid grid-cols-4 gap-6 py-6 text-[#111827]">
         <li className="flex items-center gap-3">
           <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-green-100 text-[#00ad45]">
             <NavIcon name="truck" />

@@ -59,9 +59,9 @@ export function Footer() {
   return (
     <footer className="bg-[#111827] text-sm text-gray-400">
       <FooterBenefits />
-      <div className="mx-auto grid max-w-[1368px] gap-8 px-4 py-12 md:grid-cols-2 lg:grid-cols-[2.15fr_repeat(4,1fr)] lg:gap-10">
+      <div className="store-container grid gap-8 py-12 md:grid-cols-2 lg:grid-cols-[2.22fr_repeat(4,1fr)] lg:gap-12">
         <div className="md:col-span-2 lg:col-span-1">
-          <div className="inline-flex rounded-lg bg-white px-4 py-2 text-[#263640] [&_a]:gap-1.5 [&_a]:text-[28px] [&_svg]:size-8">
+          <div className="inline-flex rounded-lg bg-white px-[18px] py-2 [&_img]:w-40">
             <BrandLogo />
           </div>
           <p className="mt-8 max-w-[430px] leading-[1.6]">
@@ -116,7 +116,7 @@ export function Footer() {
         ))}
       </div>
       <div className="border-t border-gray-800">
-        <div className="mx-auto flex max-w-[1368px] flex-col items-center justify-between gap-0 px-4 py-6 text-gray-500 md:flex-row md:gap-4">
+        <div className="store-container flex flex-col items-center justify-between gap-4 py-6 text-gray-500 md:flex-row">
           <p>© 2026 FreshCart. All rights reserved.</p>
           <ul
             aria-label="Accepted payment methods"

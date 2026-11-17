@@ -10,6 +10,16 @@ export class CartApiError extends Error {
   }
 }
 
+export class CartStockError extends Error {
+  constructor(available: number) {
+    super(
+      available > 0
+        ? `Only ${available} available. Your account cart and guest cart exceed the current stock.`
+        : "This product is no longer available.",
+    );
+  }
+}
+
 async function requestCart(
   token: string,
   method: "GET" | "POST" | "PUT" | "DELETE",
@@ -90,6 +100,34 @@ async function addProduct(token: string, productId: string, quantity: number) {
   // The API adds one unit per POST, then accepts an absolute count via PUT.
   const count = item.quantity + quantity - 1;
   return readCart(await requestCart(token, "PUT", productId, { count }));
+}
+
+export async function mergeCartItem(
+  token: string,
+  productId: string,
+  targetQuantity: number,
+): Promise<Cart> {
+  const cart = await getCart(token);
+  const current = cart.items.find((item) => item.productId === productId);
+  if (current && current.quantity >= targetQuantity) return cart;
+
+  const product = await getProduct(productId);
+  if (!product || targetQuantity > product.quantity)
+    throw new CartStockError(product?.quantity ?? 0);
+
+  if (!current) {
+    const added = await addProduct(token, productId, 1);
+    if (
+      (added.items.find((item) => item.productId === productId)?.quantity ??
+        0) >= targetQuantity
+    )
+      return added;
+  }
+  return updateCart(token, {
+    type: "quantity",
+    productId,
+    quantity: targetQuantity,
+  });
 }
 
 export async function updateCart(

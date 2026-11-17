@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useId, useState } from "react";
+import { AuthIcon } from "@/components/AuthIcon/AuthIcon";
 import { StoreIcon } from "@/components/icons/StoreIcon/StoreIcon";
 import type { ProductTabsProps } from "./@type";
 
@@ -22,7 +23,7 @@ export function ProductTabs({ product, reviews }: ProductTabsProps) {
     return () => window.removeEventListener("hashchange", showLinkedReviews);
   }, []);
   return (
-    <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <section className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
       <div
         role="tablist"
         aria-label="Product information"
@@ -50,9 +51,17 @@ export function ProductTabs({ product, reviews }: ProductTabsProps) {
               setActive(next);
               document.getElementById(`${id}-tab-${next}`)?.focus();
             }}
-            className={`shrink-0 border-b-2 px-5 py-4 text-sm font-medium ${active === index ? "border-brand bg-green-50/60 text-brand" : "border-transparent text-muted hover:text-brand"}`}
+            className={`flex shrink-0 items-center gap-2 border-b-2 px-6 py-4 font-medium transition-colors ${active === index ? "border-brand bg-green-50/60 text-brand" : "border-transparent text-gray-600 hover:text-brand"}`}
           >
-            {tab}
+            {index === 1 ? (
+              <AuthIcon name="star" className="size-4" />
+            ) : (
+              <StoreIcon
+                name={index === 0 ? "bag" : "truck"}
+                className="size-4"
+              />
+            )}
+            {index === 1 ? `${tab} (${product.ratingsQuantity})` : tab}
           </button>
         ))}
       </div>

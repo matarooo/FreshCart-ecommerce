@@ -12,12 +12,13 @@ export function AuthPromotion({ mode }: AuthPromotionProps) {
         aria-label="FreshCart shopping benefits"
         className="hidden self-center text-center lg:block"
       >
-        <div className="relative aspect-[616/384] overflow-hidden rounded-xl bg-white shadow-lg">
+        <div className="relative aspect-[616/384] overflow-hidden rounded-2xl bg-white shadow-lg">
           <Image
             src={signInPromotion}
             alt="A shopping cart filled with fresh vegetables and groceries"
-            sizes="(min-width: 1280px) 1312px, 1100px"
-            className="absolute top-[-34.64%] left-[-1.95%] h-auto w-[212.99%] max-w-none"
+            fill
+            sizes="(min-width: 1280px) 616px, 47vw"
+            className="object-cover"
           />
         </div>
         <h2 className="mt-6 text-[30px] font-bold leading-tight text-slate-800">

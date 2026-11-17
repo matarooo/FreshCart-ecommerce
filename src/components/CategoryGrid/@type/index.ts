@@ -1,1 +1,1 @@
-export type CategoryGridProps = { showCounts?: boolean };
+export type CategoryGridProps = { catalog?: boolean };

@@ -63,6 +63,15 @@ const paths: Record<StoreIconName, React.ReactNode> = {
   ),
   shield: <path d="m12 2 9 4v6c0 5-9 10-9 10S3 17 3 12V6l9-4Zm-4 10 3 3 5-6" />,
   return: <path d="M3 10a9 9 0 1 1 2 9M3 3v7h7" />,
+  compare: (
+    <path d="M20 4v6h-6M4 20v-6h6M4.8 9a7.5 7.5 0 0 1 12.7-3L20 10M4 14l2.5 4A7.5 7.5 0 0 0 19.2 15" />
+  ),
+  eye: (
+    <>
+      <path d="M2 12c2.5-4.3 6-6.5 10-6.5s7.5 2.2 10 6.5c-2.5 4.3-6 6.5-10 6.5S4.5 16.3 2 12Z" />
+      <circle cx="12" cy="12" r="2.5" />
+    </>
+  ),
   headset: (
     <>
       <path d="M4 13v-2a8 8 0 0 1 16 0v6a4 4 0 0 1-4 4h-3" />
@@ -93,6 +102,7 @@ const paths: Record<StoreIconName, React.ReactNode> = {
       <rect x="14" y="14" width="7" height="7" rx="1" />
     </>
   ),
+  folder: <path d="M3 19V5h6l2 2h10v3M3 19l3-9h16l-3 9H3Z" />,
   file: (
     <path d="M6 2h8l5 5v15H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm8 0v6h5M8 12h7m-7 4h7" />
   ),

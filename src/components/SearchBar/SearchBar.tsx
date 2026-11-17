@@ -6,7 +6,7 @@ export function SearchBar({ id }: SearchBarProps) {
     <search className="min-w-0 flex-1">
       <form
         action="/shop"
-        className="flex h-12 min-w-0 flex-1 items-center rounded-full border border-gray-200 bg-gray-50/60 p-1 pl-5 focus-within:border-brand"
+        className="flex h-[46px] min-w-0 flex-1 items-center rounded-full border border-gray-200 bg-gray-50 p-1 pl-5 transition-colors focus-within:border-brand"
       >
         <label htmlFor={id} className="sr-only">
           Search products

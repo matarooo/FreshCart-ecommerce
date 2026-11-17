@@ -4,4 +4,5 @@ export type QuantitySelectorProps = {
   onChange: (quantity: number) => void;
   label?: string;
   disabled?: boolean;
+  large?: boolean;
 };

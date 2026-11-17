@@ -26,6 +26,7 @@ export function useAccountResource<Data, Change>(
   const account = useRef<string | null | undefined>(undefined);
   const revision = useRef(0);
   const queue = useRef(createQueue());
+  const [accountEmail, setAccountEmail] = useState<string | null>();
   const [state, setState] = useState<AccountResourceState<Data>>({
     status: "loading",
   });
@@ -51,6 +52,7 @@ export function useAccountResource<Data, Change>(
     (email: string | null) => {
       if (account.current === email) return;
       account.current = email;
+      setAccountEmail(email);
       revision.current++;
       queue.current = createQueue();
       setPending(new Set());
@@ -133,6 +135,7 @@ export function useAccountResource<Data, Change>(
   }
 
   return {
+    accountEmail,
     state,
     updating: pending.size > 0,
     isProductUpdating: (productId: string) =>

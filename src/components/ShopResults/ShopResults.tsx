@@ -10,7 +10,10 @@ export async function ShopResults({ searchParams }: ShopResultsProps) {
   const query = typeof params.q === "string" ? params.q.trim() : "";
   const brand = typeof params.brand === "string" ? params.brand : "";
   const category = typeof params.category === "string" ? params.category : "";
+  const subcategory =
+    typeof params.subcategory === "string" ? params.subcategory : "";
   const deals = params.deals === "true";
+  const newest = params.sort === "newest";
   const [products, brands, categories] = await Promise.all([
     getProducts(),
     getBrands(),
@@ -30,22 +33,27 @@ export async function ShopResults({ searchParams }: ShopResultsProps) {
           .includes(query.toLowerCase())) &&
       (!brand || product.brand._id === brandMatch?._id) &&
       (!category || product.category._id === categoryMatch?._id) &&
+      (!subcategory ||
+        product.subcategory.some((item) => item._id === subcategory)) &&
       (!deals || discountPercent(product) > 0),
   );
+  if (newest) {
+    filtered.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+  }
   const activeFilters = [
     query && `Search: “${query}”`,
     brand && (brandMatch?.name ?? brand),
     category && (categoryMatch?.name ?? category),
+    subcategory &&
+      (filtered[0]?.subcategory.find((item) => item._id === subcategory)
+        ?.name ??
+        "Subcategory"),
     deals && "On sale",
   ].filter(Boolean);
   return (
-    <div className="store-container py-7">
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-muted">
-          Showing{" "}
-          <span className="font-medium text-slate-700">{filtered.length}</span>{" "}
-          products
-        </p>
+    <div className="store-container py-8">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm text-muted">Showing {filtered.length} products</p>
         {activeFilters.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
             {activeFilters.map((filter) => (

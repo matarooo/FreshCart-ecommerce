@@ -12,3 +12,15 @@ export function fetchAccountCart(
     change,
   );
 }
+
+export function mergeAccountCartItem(
+  account: string,
+  productId: string,
+  targetQuantity: number,
+): Promise<CartState> {
+  return fetchAccountResource<Cart>("/api/cart", "x-cart-account", account, {
+    type: "merge",
+    productId,
+    targetQuantity,
+  });
+}

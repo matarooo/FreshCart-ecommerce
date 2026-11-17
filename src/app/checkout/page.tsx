@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CheckoutForm } from "@/components/CheckoutForm/CheckoutForm";
+import { CheckoutCart } from "@/components/CheckoutCart/CheckoutCart";
 import { NavIcon } from "@/components/NavIcon/NavIcon";
 import { getAddresses } from "@/lib/addresses/address.api";
 import { loginHref } from "@/lib/auth/account-resource.client";
 import { getCommerceSession } from "@/lib/auth/commerce-session";
-import { CartApiError, getCart } from "@/lib/cart/cart.api";
-import { cartReview } from "@/lib/cart/cart-review";
 
 export const metadata: Metadata = { title: "Checkout | FreshCart" };
 
@@ -15,14 +13,7 @@ export default async function CheckoutPage() {
   const signIn = loginHref("/checkout");
   const session = await getCommerceSession();
   if (!session) redirect(signIn);
-  const [cart, addresses] = await Promise.all([
-    getCart(session.token).catch((error: unknown) => {
-      if (error instanceof CartApiError && [401, 403].includes(error.status))
-        redirect(signIn);
-      return null;
-    }),
-    getAddresses(session.token).catch(() => []),
-  ]);
+  const addresses = await getAddresses(session.token).catch(() => []);
 
   return (
     <main
@@ -65,24 +56,7 @@ export default async function CheckoutPage() {
             ← Back to Cart
           </Link>
         </div>
-        {!cart || (cart.items.length > 0 && !cart.id) ? (
-          <p
-            role="alert"
-            className="rounded-2xl border border-gray-200 bg-white p-5 text-sm text-muted"
-          >
-            Checkout is temporarily unavailable. Return to your cart to try
-            again.
-          </p>
-        ) : !cart.items.length ? (
-          <p className="text-sm text-muted">Your cart is empty.</p>
-        ) : (
-          <CheckoutForm
-            email={session.email}
-            review={cartReview(cart)}
-            addresses={addresses}
-            cart={cart}
-          />
-        )}
+        <CheckoutCart email={session.email} addresses={addresses} />
       </div>
     </main>
   );

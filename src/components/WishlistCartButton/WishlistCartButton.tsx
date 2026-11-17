@@ -36,7 +36,7 @@ export function WishlistCartButton({
           type="button"
           disabled={!isInStock(product) || adding || state.status === "loading"}
           onClick={async () => {
-            if (await addToCart(product.id)) setAdded(true);
+            if (await addToCart(product)) setAdded(true);
           }}
           className="store-button min-h-9 min-w-28 px-3 py-2 text-xs"
         >

@@ -11,7 +11,7 @@ const benefits: {
   {
     icon: "truck",
     title: "Free Shipping",
-    description: "On orders over 550 EGP",
+    description: "On orders over 500 EGP",
     color: "bg-blue-50 text-blue-500",
   },
   {
@@ -23,7 +23,7 @@ const benefits: {
   {
     icon: "return",
     title: "Easy Returns",
-    description: "30-day return policy",
+    description: "14-day return policy",
     color: "bg-orange-50 text-orange-500",
   },
   {
@@ -36,23 +36,26 @@ const benefits: {
 export function ServiceBenefits({ compact }: ServiceBenefitsProps) {
   return (
     <div
-      className={`grid gap-3 ${compact ? "grid-cols-1 sm:grid-cols-3" : "grid-cols-2 lg:grid-cols-4"}`}
+      className={`grid gap-4 ${compact ? "grid-cols-1 sm:grid-cols-3" : "md:grid-cols-2 lg:grid-cols-4"}`}
     >
       {benefits.slice(0, compact ? 3 : 4).map((benefit) => (
         <div
           key={benefit.title}
-          className={`flex items-center gap-3 ${compact ? "py-2" : "rounded-lg border border-gray-200 bg-white p-4"}`}
+          className={`flex items-center ${compact ? "gap-3 py-2" : "gap-4 rounded-xl bg-white p-4 shadow-sm transition-shadow duration-300 hover:shadow-md"}`}
         >
           <span
-            className={`flex size-10 shrink-0 items-center justify-center rounded-full ${benefit.color}`}
+            className={`flex shrink-0 items-center justify-center rounded-full ${compact ? "size-10" : "size-12"} ${benefit.color}`}
           >
-            <StoreIcon name={benefit.icon} className="size-5" />
+            <StoreIcon
+              name={benefit.icon}
+              className={compact ? "size-5" : "size-6"}
+            />
           </span>
           <div>
-            <h3 className="text-xs font-semibold">{benefit.title}</h3>
-            <p className="mt-1 text-[10px] text-muted sm:text-xs">
-              {benefit.description}
-            </p>
+            <h3 className="text-sm font-semibold text-gray-800">
+              {benefit.title}
+            </h3>
+            <p className="text-xs text-muted">{benefit.description}</p>
           </div>
         </div>
       ))}

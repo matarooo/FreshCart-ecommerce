@@ -69,7 +69,7 @@ export function MobileMenu({ userName }: MobileMenuProps) {
       {isOpen && (
         <div
           id={menuId}
-          className="absolute inset-x-0 top-full max-h-[calc(100dvh-68px)] overflow-y-auto border-b border-gray-200 bg-white text-sm text-slate-700 shadow-lg"
+          className="absolute inset-x-0 top-full max-h-[calc(100dvh-64px)] overflow-y-auto border-b border-gray-200 bg-white text-sm text-slate-700 shadow-lg"
         >
           <search className="border-b border-gray-100 px-4 py-5">
             <form

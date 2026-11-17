@@ -5,5 +5,9 @@ export type PageBannerProps = {
   subtitle: ReactNode;
   icon: StoreIconName;
   purple?: boolean;
+  spacious?: boolean;
   prominent?: boolean;
+  breadcrumb?: string;
+  parent?: { label: string; href: string };
+  image?: string;
 };
