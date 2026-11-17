@@ -93,6 +93,33 @@ const paths: Record<StoreIconName, React.ReactNode> = {
       <rect x="14" y="14" width="7" height="7" rx="1" />
     </>
   ),
+  file: (
+    <path d="M6 2h8l5 5v15H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm8 0v6h5M8 12h7m-7 4h7" />
+  ),
+  database: (
+    <>
+      <ellipse cx="12" cy="5" rx="8" ry="3" />
+      <path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" />
+    </>
+  ),
+  cookie: (
+    <>
+      <path d="M21 13a4 4 0 0 1-5-5 4 4 0 0 1-5-5 9 9 0 1 0 10 10Z" />
+      <path d="M8 12h.01m2 5h.01m5-3h.01" strokeWidth="3" />
+    </>
+  ),
+  handshake: (
+    <path d="m2 12 4-8 4 2m8-2 4 8-4 3-6-5-2 2a2 2 0 0 1-3-2l4-4h4l3-2M2 12l4 3 4 4a2 2 0 0 0 3 0l4-4" />
+  ),
+  scales: (
+    <path d="M12 3v17M7 21h10M3 6h18M6 6l-4 8h8L6 6Zm12 0-4 8h8l-4-8ZM2 14a4 4 0 0 0 8 0m4 0a4 4 0 0 0 8 0" />
+  ),
+  verifiedUser: (
+    <>
+      <circle cx="9" cy="7" r="3.5" />
+      <path d="M2 20v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2M16 10l2 2 4-5" />
+    </>
+  ),
   check: <path d="m5 12 4 4L19 6" />,
 };
 

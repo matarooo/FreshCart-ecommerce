@@ -21,5 +21,11 @@ export type StoreIconName =
   | "share"
   | "bolt"
   | "grid"
+  | "file"
+  | "database"
+  | "cookie"
+  | "handshake"
+  | "scales"
+  | "verifiedUser"
   | "check";
 export type StoreIconProps = { name: StoreIconName; className?: string };
